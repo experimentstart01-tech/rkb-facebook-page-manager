@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RKB Page Manager</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <main class="shell">
+    <header><h1>RKB Page Manager</h1><a class="button" href="/auth/facebook">Connect Facebook</a></header>
+
+    <section class="grid">
+      <article>
+        <h2>Accounts</h2>
+        {% if accounts %}
+          {% for account in accounts %}<div class="row"><b>{{ account.name }}</b><span>{{ account.user_id }}</span></div>{% endfor %}
+        {% else %}<p>No Facebook accounts connected.</p>{% endif %}
+      </article>
+
+      <article>
+        <h2>Pages</h2>
+        {% if pages %}
+          {% for page in pages %}<div class="row"><b>{{ page.name }}</b><span>{{ page.id }}</span></div>{% endfor %}
+        {% else %}<p>No Pages discovered.</p>{% endif %}
+      </article>
+    </section>
+
+    <section>
+      <h2>Create post</h2>
+      <form method="post" action="/posts" enctype="multipart/form-data">
+        <label>Caption<textarea name="caption" required></textarea></label>
+        <label>Media type
+          <select name="media_type">
+            <option value="text">Text</option>
+            <option value="image">Image</option>
+            <option value="video">Video</option>
+          </select>
+        </label>
+        <label>Media file <input type="file" name="media"></label>
+        <label>Pages
+          <select name="page_ids" multiple size="8">
+            {% for page in pages %}<option value="{{ page.id }}">{{ page.name }}</option>{% endfor %}
+          </select>
+        </label>
+        <label>Schedule (optional, ISO 8601)<input type="datetime-local" name="scheduled_at"></label>
+        <button type="submit">Publish</button>
+      </form>
+    </section>
+
+    <section>
+      <h2>Recent posts</h2>
+      {% for post in posts %}<div class="row"><b>#{{ post.id }}</b><span>{{ post.status }}</span><span>{{ post.message }}</span></div>{% endfor %}
+    </section>
+  </main>
+</body>
+</html>
